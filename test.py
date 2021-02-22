@@ -3,7 +3,7 @@ import os
 from configparser import ConfigParser
 from generator import AugmentedImageSequence
 from models.keras import ModelFactory
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, roc_curve
 from utility import get_sample_counts
 
 
@@ -33,7 +33,8 @@ def main():
     best_weights_path = os.path.join(output_dir, f"best_{output_weights_name}")
 
     # get test sample count
-    test_counts, _ = get_sample_counts(output_dir, "test", class_names)
+    test_counts = 32 # hard coded the number of test images in ./data/images
+    # test_counts, _ = get_sample_counts(output_dir, "test", class_names)
 
     # compute steps
     if test_steps == "auto":
@@ -64,7 +65,7 @@ def main():
 
     print("** load test generator **")
     test_sequence = AugmentedImageSequence(
-        dataset_csv_file=os.path.join(output_dir, "dev.csv"),
+        dataset_csv_file=os.path.join(output_dir, "toy.csv"),
         class_names=class_names,
         source_image_dir=image_source_dir,
         batch_size=batch_size,
@@ -97,3 +98,41 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# # Calculate ROC and decision threshold
+# fpr, tpr, thresholds = roc_curve(y[:,2], y_hat[:,2])
+# # plot the roc curve for the model
+# import matplotlib.pyplot as plt
+# plt.plot([0,1], [0,1], linestyle='--', label='No Skill')
+# plt.plot(fpr, tpr, marker='.', label='Logistic')
+# # axis labels
+# plt.xlabel('False Positive Rate')
+# plt.ylabel('True Positive Rate')
+# plt.legend()
+
+# # calculate the g-mean for each threshold
+# gmeans = np.sqrt(tpr * (1-fpr))
+
+# # locate the index of the largest g-mean
+# ix = np.argmax(gmeans)
+# print('Best Threshold=%f, G-Mean=%.3f' % (thresholds[ix], gmeans[ix]))
+
+# # load a sample image
+# from PIL import Image
+# from skimage.transform import resize
+# image = Image.open('./data/images/00000001_000.png')
+# image_array = np.asarray(image.convert("RGB"))
+# image_array = image_array / 255.
+# image_array = resize(image_array, (224,224))
+# image_array = np.expand_dims(image_array, axis=0)
+
+# imagenet_mean = np.array([0.485, 0.456, 0.406])
+# imagenet_std = np.array([0.229, 0.224, 0.225])
+
+# # image_array = (image_array - imagenet_mean) / imagenet_std
+
+
+# # do prediction
+# output = model.predict(image_array)
+# # output.argmax()
+
