@@ -154,15 +154,16 @@ def get_img_transformed(img_path):
     from PIL import Image
     from skimage.transform import resize
     image = Image.open(img_path)
+    
     image_array = np.asarray(image.convert("RGB"))
     image_array = image_array / 255.
     image_array = resize(image_array, (224,224))
     
     
-    # imagenet_mean = np.array([0.485, 0.456, 0.406])
-    # imagenet_std = np.array([0.229, 0.224, 0.225])
+    imagenet_mean = np.array([0.485, 0.456, 0.406])
+    imagenet_std = np.array([0.229, 0.224, 0.225])
     
-    # image_array = (image_array - imagenet_mean) / imagenet_std
+    image_array = (image_array - imagenet_mean) / imagenet_std
     
     # image_array = np.expand_dims(image_array, axis=0)
     
@@ -249,9 +250,24 @@ def cam_overlay(img_path, model, img_transformed, class_names, label):
 
 if __name__ == "__main__":
     
+    
+    
+    image_name = 'AA08F6B3.png'
+    label = 'Infiltration'
+    
+    
+    # image_name = 'AAAB7320.png'
+    # label = 'Edema'
+
+    
+    # image_name = 'AA48682D.png'
+    # label = 'Infiltration'
+    
+    # image_name = 'AA5A4795.png'
+    # label = 'Pneumothorax' # label should be provided based on prediction
+    
     # img_path = './data/images/00000211_041.png'
-    img_path = './data/my_images/AAF02D49.png'
-    label = 'Pneumothorax' # label should be provided based on prediction
+    img_path = os.path.join('./data/my_images', image_name)
     img_transformed = get_img_transformed(img_path)
     model, class_names = load_model()
     img_overlay = cam_overlay(img_path, model, img_transformed, class_names, label)
@@ -259,5 +275,8 @@ if __name__ == "__main__":
     
     plt.imshow(img_overlay.astype('int'))
     # cv2.imwrite('./experiments/1/cam_00000211_041.png', img_overlay)
+    cv2.imwrite(os.path.join('./experiments/1/','cam_' + image_name), img_overlay)
+    
+    
     
     # main()

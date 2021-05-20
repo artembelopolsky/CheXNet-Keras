@@ -9,3 +9,6 @@ densenet121_weights_tf.h5
 venv
 config.ini
 *.pdf
+*.png
+*.bmp
+data/my_images/AAF02D49.bmp

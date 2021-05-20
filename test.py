@@ -117,22 +117,22 @@ if __name__ == "__main__":
 # ix = np.argmax(gmeans)
 # print('Best Threshold=%f, G-Mean=%.3f' % (thresholds[ix], gmeans[ix]))
 
-# # load a sample image
-# from PIL import Image
-# from skimage.transform import resize
-# image = Image.open('./data/images/00000001_000.png')
-# image_array = np.asarray(image.convert("RGB"))
-# image_array = image_array / 255.
-# image_array = resize(image_array, (224,224))
-# image_array = np.expand_dims(image_array, axis=0)
+# load a sample image
+from PIL import Image
+from skimage.transform import resize
+image = Image.open('./data/images/00000001_000.png')
+image_array = np.asarray(image.convert("RGB"))
+image_array = image_array / 255.
+image_array = resize(image_array, (224,224))
+image_array = np.expand_dims(image_array, axis=0)
 
-# imagenet_mean = np.array([0.485, 0.456, 0.406])
-# imagenet_std = np.array([0.229, 0.224, 0.225])
+imagenet_mean = np.array([0.485, 0.456, 0.406])
+imagenet_std = np.array([0.229, 0.224, 0.225])
 
-# # image_array = (image_array - imagenet_mean) / imagenet_std
+image_array = (image_array - imagenet_mean) / imagenet_std
 
 
-# # do prediction
-# output = model.predict(image_array)
+# do prediction
+output = model.predict(image_array)
 # # output.argmax()
 
